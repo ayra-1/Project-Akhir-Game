@@ -1,26 +1,46 @@
 #include <iostream>
-#include <ncurses.h>
+#include <string>
 #include <cstdlib>
 #include <ctime>
+#include <ncurses/ncurses.h>
+
 using namespace std;
 
-int main() {
+void tampilkanJudul() {
+    clear();
 
-    int angkaRahasia;
-    int tebakan;
-    int percobaan = 0;
-    char ulang;
+    attron(COLOR_PAIR(1) | A_BOLD);
+    mvprintw(2, 10, "===================================");
+    mvprintw(3, 10, "         GAME TEBAK ANGKA       ");
+    mvprintw(4, 10, "===================================");
+    attroff(COLOR_PAIR(1) | A_BOLD);
 
-    srand(time(0));
+    mvprintw(6, 15, "Tebak angka dari 1 sampai 100!");
+    refresh();
+}
+int inputAngka(int y, int x){
+    string input = "";
+    int ch;
 
-    do {
-        // Menentukan angka secara acak
-        angkaRahasia = rand() % 100 + 1;
+    move(y, x);
+    clrtoeol();
+    refresh();
 
-        percobaan = 0;
+    while (true) {
+        ch = getch();
 
-        cout << "============================" << endl;
-        cout << "      GAME TEBAK ANGKA      " << endl;
-        cout << "============================" << endl;
-
-        cout << "Tebak angka dari 1 sampai 100!" << endl;
+        if (ch == '\n' || ch == KEY_ENTER) {
+            if (!input.empty()) {
+              return stoi(input);  
+            }
+        }
+        else if (ch == KEY_BACKSPACE || ch == 127 || ch == '\b') {
+            if (!input.empty()) {
+                input.pop_back();
+                mvprintw(y, x, "%-5s", input.c_str());
+                move(y, x + input.length());
+                refresh();
+            }
+        }
+        }
+    }
